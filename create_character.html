@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles/theme.css" type="text/css">
+</head>
+<body class="">
+  <form id="createcharacter" action="/createcharacter" method="POST">
+    <input type="text" class="form-control-lg mx-2 my-1" placeholder="Character Name"><br>
+    <input type="text" class="form-control-lg mx-2 my-1" placeholder="True Name"><br>
+    <select class="form-control-lg mx-2 my-1" name="race">
+      <option value="" disabled selected>Race</option>
+      <option value="human">Human</option>
+      <option value="highelf">High Elf</option>
+      <option value="orc">Orc</option>
+    </select><br>
+    <select class="form-control-lg mx-2 my-1" list="occupations" name="occupation">
+      <option value="" disabled selected>Occupation</option>
+      <option value="mercenary">Mercenary</option>
+      <option value="ranger">Ranger</option>
+      <option value="templar">Templar</option>
+      <option value="nightblade">Nightblade</option>
+      <option value="assassin">Assassin</option>
+      <option value="witchhunter">Witchhunter</option>
+      <option value="mage">Mage</option>
+      <option value="druid">Druid</option>
+      <option value="bard">Bard</option>
+    </select><br>
+    <button class="btn btn-primary btn-lg mx-2" type="submit">Create</button>
+  </form>
+</body>
+</html>
+
