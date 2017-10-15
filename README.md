@@ -1,2 +1,2 @@
 # underworld
-New Underworld LARP platform running on Python 3
+New Underworld LARP web platform running on GoLang
