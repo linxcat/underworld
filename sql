@@ -6,26 +6,27 @@
 -- SET FOREIGN_KEY_CHECKS=0;
 
 -- ---
--- Table 'Characters'
+-- Table 'characters'
 -- I have a concept for a ex-prince draconian half-demon
 -- ---
 
-DROP TABLE IF EXISTS `Characters`;
+DROP TABLE IF EXISTS `characters`;
 		
-CREATE TABLE `Characters` (
+CREATE TABLE `characters` (
   `id` INTEGER NOT NULL AUTO_INCREMENT,
   `player` INTEGER NOT NULL,
   `homeguild` INTEGER NOT NULL,
   `name` VARCHAR(255) NOT NULL,
-  `truename` VARCHAR(14) NULL DEFAULT NULL,
+  `1name` VARCHAR(14) NULL DEFAULT NULL,
   `race` INTEGER NOT NULL,
   `occuptation` INTEGER NOT NULL,
   `vocation` INTEGER NULL DEFAULT NULL,
+  `locked` BOOL NOT NULL DEFAULT 1,
   `blanketsapplied` SMALLINT NOT NULL DEFAULT 0,
   `level` TINYINT NOT NULL DEFAULT 1,
   `maxHP` SMALLINT NOT NULL DEFAULT 2,
   `deaths` TINYINT NOT NULL DEFAULT 0,
-  `dead` TINYINT(1) NOT NULL DEFAULT 0,
+  `dead` BOOL NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) COMMENT 'I have a concept for a ex-prince draconian half-demon';
 
@@ -43,8 +44,8 @@ CREATE TABLE `players` (
   `name` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) NOT NULL,
   `birthday` DATE NULL DEFAULT NULL,
-  `signedwaivers` SET ('jericho', 'kalidor', 'ralinwood', 'havenhollow', 'ashendael', 'stormlands', 'salemruin', 'tempestgrove', 'zenithstrand', 'bryzanthea') NOT NULL,
-  `blankets` SMALLINT NOT NULL,
+  `signedwaivers` SET ('jericho', 'kalidor', 'ralinwood', 'havenhollow', 'ashendael', 'stormlands', 'salemruin', 'tempestgrove', 'zenithstrand', 'bryzanthea') NULL DEFAULT NULL,
+  `blankets` SMALLINT NOT NULL DEFAULT 0,
   `xprecord` MEDIUMTEXT NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY (`username`),
@@ -71,16 +72,16 @@ CREATE TABLE `classes` (
 ) COMMENT 'Occupations and Vocations';
 
 -- ---
--- Table 'Guilds'
+-- Table 'guilds'
 -- Hail Hydra
 -- ---
 
-DROP TABLE IF EXISTS `Guilds`;
+DROP TABLE IF EXISTS `guilds`;
 		
-CREATE TABLE `Guilds` (
+CREATE TABLE `guilds` (
   `id` INTEGER NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
-  `logopen` TINYINT(1) NOT NULL DEFAULT 0,
+  `logopen` BOOL NOT NULL DEFAULT 0,
   `price` TINYINT NOT NULL DEFAULT 0,
   `costofliving` TINYINT NOT NULL DEFAULT 0,
   `splashpath` MEDIUMTEXT NULL DEFAULT NULL,
@@ -102,9 +103,9 @@ DROP TABLE IF EXISTS `skills`;
 CREATE TABLE `skills` (
   `id` INTEGER NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
-  `selftaught` TINYINT(1) NOT NULL DEFAULT 1,
+  `selftaught` BOOL NOT NULL DEFAULT 1,
   `multipurchase` TINYINT NOT NULL DEFAULT -1,
-  `tag` TINYINT(1) NOT NULL DEFAULT 0,
+  `tag` BOOL NOT NULL DEFAULT 0,
   `fragcost` SMALLINT NOT NULL DEFAULT 0,
   `racelimit` INTEGER NULL DEFAULT NULL,
   `typelimit` INTEGER NULL DEFAULT NULL,
@@ -187,7 +188,7 @@ CREATE TABLE `races` (
   `name` VARCHAR(255) NOT NULL,
   `multipurchase` TINYINT NOT NULL DEFAULT 1,
   `fragcost` SMALLINT NOT NULL DEFAULT 0,
-  `onsale` TINYINT(1) NOT NULL DEFAULT 0,
+  `onsale` BOOL NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY (`name`)
 ) COMMENT 'Looks like a wild elf';
@@ -271,11 +272,11 @@ CREATE TABLE `classtypes` (
 -- Foreign Keys 
 -- ---
 
-ALTER TABLE `Characters` ADD FOREIGN KEY (player) REFERENCES `players` (`id`);
-ALTER TABLE `Characters` ADD FOREIGN KEY (homeguild) REFERENCES `Guilds` (`id`);
-ALTER TABLE `Characters` ADD FOREIGN KEY (race) REFERENCES `races` (`id`);
-ALTER TABLE `Characters` ADD FOREIGN KEY (occuptation) REFERENCES `classes` (`id`);
-ALTER TABLE `Characters` ADD FOREIGN KEY (vocation) REFERENCES `classes` (`id`);
+ALTER TABLE `characters` ADD FOREIGN KEY (player) REFERENCES `players` (`id`);
+ALTER TABLE `characters` ADD FOREIGN KEY (homeguild) REFERENCES `guilds` (`id`);
+ALTER TABLE `characters` ADD FOREIGN KEY (race) REFERENCES `races` (`id`);
+ALTER TABLE `characters` ADD FOREIGN KEY (occuptation) REFERENCES `classes` (`id`);
+ALTER TABLE `characters` ADD FOREIGN KEY (vocation) REFERENCES `classes` (`id`);
 ALTER TABLE `classes` ADD FOREIGN KEY (type) REFERENCES `classtypes` (`id`);
 ALTER TABLE `skills` ADD FOREIGN KEY (racelimit) REFERENCES `races` (`id`);
 ALTER TABLE `skills` ADD FOREIGN KEY (typelimit) REFERENCES `classtypes` (`id`);
@@ -287,10 +288,10 @@ ALTER TABLE `skillcosts` ADD FOREIGN KEY (skill) REFERENCES `skills` (`id`);
 -- Table Properties
 -- ---
 
--- ALTER TABLE `Characters` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `characters` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 -- ALTER TABLE `players` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 -- ALTER TABLE `classes` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `Guilds` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `guilds` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 -- ALTER TABLE `skills` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 -- ALTER TABLE `mortigeist` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 -- ALTER TABLE `weapons` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -306,13 +307,18 @@ ALTER TABLE `skillcosts` ADD FOREIGN KEY (skill) REFERENCES `skills` (`id`);
 -- Test Data
 -- ---
 
--- INSERT INTO `Characters` (`id`,`player`,`homeguild`,`name`,`trueName`,`race`,`occuptation`,`vocation`,`blanketsApplied`,`level`,`maxHP`,`deaths`,`dead`) VALUES
+INSERT INTO `guilds` (`name`,`logopen`) VALUES
+('Testland','1');
+INSERT INTO `players` (`username`,`password`,`name`,`email`) VALUES
+('testplayer', 'testing', 'McLovin', 'emceelovin@hawaii.gov');
+
+-- INSERT INTO `characters` (`id`,`player`,`homeguild`,`name`,`1Name`,`race`,`occuptation`,`vocation`,`blanketsApplied`,`level`,`maxHP`,`deaths`,`dead`) VALUES
 -- ('','','','','','','','','','','','','');
 -- INSERT INTO `players` (`id`,`username`,`password`,`name`,`email`,`birthday`,`signedwaivers`,`blankets`,`xprecord`) VALUES
 -- ('','','','','','','','','');
 -- INSERT INTO `classes` (`id`,`name`,`type`,`skill1`,`skill2`,`skill3`,`skill4`) VALUES
 -- ('','','','','','','');
--- INSERT INTO `Guilds` (`id`,`name`,`logopen`,`price`,`costofliving`,`splashpath`) VALUES
+-- INSERT INTO `guilds` (`id`,`name`,`logopen`,`price`,`costofliving`,`splashpath`, `logmail`, `shapermail`, `nplmail`, `mappath`) VALUES
 -- ('','','','','','');
 -- INSERT INTO `skills` (`id`,`name`,`selftaught`,`multipurchase`,`tag`,`fragcost`,`racelimit`,`typelimit`) VALUES
 -- ('','','','','','','','');
