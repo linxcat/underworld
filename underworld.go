@@ -12,7 +12,7 @@ func exampleHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	r := mux.NewRouter()
-	//mux.HandleFunc("/", ).Methods("GET")
+	r.HandleFunc("/characters", exampleHandler).Methods("GET")
 	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("./"))))
 
 	n := negroni.Classic()
